@@ -1,0 +1,8 @@
+### Fetch access token (create)
+POST {{host}}/oauth2/token HTTP/1.1
+Authorization: Basic {{messaging-client-creds}}
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&scope=message.read
+
+> {% client.global.set("auth_token", response.body.access_token); %}

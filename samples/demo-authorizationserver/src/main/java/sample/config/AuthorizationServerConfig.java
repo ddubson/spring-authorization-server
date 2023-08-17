@@ -72,7 +72,7 @@ public class AuthorizationServerConfig {
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	public SecurityFilterChain authorizationServerSecurityFilterChain(
 			HttpSecurity http, RegisteredClientRepository registeredClientRepository,
-			AuthorizationServerSettings authorizationServerSettings) throws Exception {
+			AuthorizationServerSettings authorizationServerSettings, OAuth2AuthorizationService service) throws Exception {
 
 		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
@@ -111,6 +111,9 @@ public class AuthorizationServerConfig {
 					.authenticationConverter(deviceClientAuthenticationConverter)
 					.authenticationProvider(deviceClientAuthenticationProvider)
 			)
+				.tokenEndpoint(token -> {
+					token.accessTokenResponseHandler(new CustomAccessTokenSuccessResponseHandler(service));
+				})
 			.authorizationEndpoint(authorizationEndpoint ->
 				authorizationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI))
 			.oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
